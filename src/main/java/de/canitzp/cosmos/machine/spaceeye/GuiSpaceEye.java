@@ -1,12 +1,15 @@
 package de.canitzp.cosmos.machine.spaceeye;
 
 import de.canitzp.cosmos.Cosmos;
-import de.canitzp.cosmos.SpacePosition;
-import de.canitzp.cosmos.sat.SatTypes;
-import de.canitzp.cosmos.sat.Satellite;
+import de.canitzp.cosmos.spaceobjects.SpacePosition;
+import de.canitzp.cosmos.spaceobjects.sat.SatTypes;
+import de.canitzp.cosmos.spaceobjects.sat.Satellite;
 import de.canitzp.cosmos.data.SpaceData;
-import de.canitzp.cosmos.space.Planet;
+import de.canitzp.cosmos.spaceobjects.space.Galaxy;
+import de.canitzp.cosmos.spaceobjects.space.Planet;
+import de.canitzp.ctpcore.inventory.FakeContainer;
 import de.canitzp.ctpcore.inventory.GuiContainerBase;
+import de.canitzp.ctpcore.tile.FakeTileEntity;
 import de.canitzp.ctpcore.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -25,16 +28,16 @@ import java.util.List;
 /**
  * @author canitzp
  */
-public class GuiSpaceEye extends GuiContainerBase<TileSpaceEye> {
+public class GuiSpaceEye extends GuiContainerBase<FakeTileEntity> {
 
-    public static final ResourceLocation guiLoc = new ResourceLocation(Cosmos.MODID, "textures/gui/gui_space_eye.png");
+    private static final ResourceLocation guiLoc = new ResourceLocation(Cosmos.MODID, "textures/gui/gui_space_eye.png");
 
     private List<IElement> elements = new ArrayList<>();
     private int activeElement = -1;
-    public Info scrollInfo;
+    private Info scrollInfo;
 
     public GuiSpaceEye(EntityPlayer player, int x,int y, int z) {
-        super(new ContainerSpaceEye(player, x, y, z));
+        super(new FakeContainer<>(player, x, y, z));
         this.xSize = 256;
         this.ySize = 166;
     }
@@ -135,7 +138,7 @@ public class GuiSpaceEye extends GuiContainerBase<TileSpaceEye> {
         @Nullable
         @Override
         public String getSecondLine() {
-            return TextFormatting.DARK_GRAY + this.satellite.getPosition().getClostestLocationString("Location: ");
+            return TextFormatting.DARK_GRAY + this.satellite.getPosition().getClosestLocationString("Location: ");
         }
 
         @Nonnull

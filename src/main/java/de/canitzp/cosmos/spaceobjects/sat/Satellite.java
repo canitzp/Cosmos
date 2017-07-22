@@ -1,6 +1,6 @@
-package de.canitzp.cosmos.sat;
+package de.canitzp.cosmos.spaceobjects.sat;
 
-import de.canitzp.cosmos.SpacePosition;
+import de.canitzp.cosmos.spaceobjects.SpacePosition;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -60,7 +60,7 @@ public class Satellite implements INBTSerializable<NBTTagCompound> {
     }
 
     public List<String> getProperties(ArrayList<String> current){
-        current.add("Position: " + this.position.getClostestLocationString(""));
+        current.add("Position: " + this.position.getClosestLocationString(""));
         current.add("SatType:  " + this.type.name());
         return current;
     }

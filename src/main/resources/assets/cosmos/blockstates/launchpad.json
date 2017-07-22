@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cosmos:launchpad",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "direction": {
+      "north": {"x": 0, "y": 0},
+      "south": {"x": 0, "y": 180},
+      "west": {"x": 0, "y": 270},
+      "east": {"x": 0, "y": 90}
+    }
+  }
+}

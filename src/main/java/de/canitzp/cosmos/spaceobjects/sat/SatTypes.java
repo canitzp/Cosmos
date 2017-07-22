@@ -1,4 +1,4 @@
-package de.canitzp.cosmos.sat;
+package de.canitzp.cosmos.spaceobjects.sat;
 
 /**
  * @author canitzp

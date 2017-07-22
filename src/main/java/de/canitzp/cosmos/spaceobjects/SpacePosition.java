@@ -1,10 +1,8 @@
-package de.canitzp.cosmos;
+package de.canitzp.cosmos.spaceobjects;
 
-import de.canitzp.cosmos.space.Galaxy;
-import de.canitzp.cosmos.space.Group;
-import de.canitzp.cosmos.space.Planet;
-import de.canitzp.cosmos.space.StarSystem;
+import de.canitzp.cosmos.spaceobjects.space.*;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -17,15 +15,15 @@ import javax.annotation.Nullable;
  */
 public class SpacePosition implements INBTSerializable<NBTTagCompound>{
 
-    @Nullable private Group currentGroup;
+    @Nullable private GalacticGroup currentGalacticGroup;
     @Nullable private Galaxy currentGalaxy;
     @Nullable private StarSystem currentStarSystem;
     @Nullable private Planet currentPlanet;
 
     public SpacePosition(){}
 
-    public SpacePosition(@Nonnull Group group){
-        this.setGroup(group);
+    public SpacePosition(@Nonnull GalacticGroup galacticGroup){
+        this.setGroup(galacticGroup);
     }
 
     public SpacePosition(@Nonnull Galaxy galaxy){
@@ -42,8 +40,8 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
 
     public SpacePosition(@Nonnull NBTTagCompound nbt){this.deserializeNBT(nbt);}
 
-    public SpacePosition setGroup(@Nonnull Group group){
-        this.currentGroup = group;
+    public SpacePosition setGroup(@Nonnull GalacticGroup galacticGroup){
+        this.currentGalacticGroup = galacticGroup;
         this.currentGalaxy = null;
         this.currentStarSystem = null;
         this.currentPlanet = null;
@@ -51,7 +49,7 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
     }
 
     public SpacePosition setGalaxy(@Nonnull Galaxy galaxy){
-        this.setGroup(galaxy.getGroup());
+        this.setGroup(galaxy.getParent());
         this.currentGalaxy = galaxy;
         this.currentStarSystem = null;
         this.currentPlanet = null;
@@ -59,28 +57,28 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
     }
 
     public SpacePosition setStarSystem(@Nonnull StarSystem starSystem){
-        this.setGalaxy(starSystem.getGalaxy());
+        this.setGalaxy(starSystem.getParent());
         this.currentStarSystem = starSystem;
         this.currentPlanet = null;
         return this;
     }
 
     public SpacePosition setPlanet(@Nonnull Planet planet){
-        this.setStarSystem(planet.getStarSystem());
+        this.setStarSystem(planet.getParent());
         this.currentPlanet = planet;
         return this;
     }
 
-    public SpacePosition setUnsafe(@Nullable Group group, @Nullable Galaxy galaxy, @Nullable StarSystem starSystem, @Nullable Planet planet){
-        this.currentGroup = group;
+    public SpacePosition setUnsafe(@Nullable GalacticGroup galacticGroup, @Nullable Galaxy galaxy, @Nullable StarSystem starSystem, @Nullable Planet planet){
+        this.currentGalacticGroup = galacticGroup;
         this.currentGalaxy = galaxy;
         this.currentStarSystem = starSystem;
         this.currentPlanet = planet;
         return this;
     }
 
-    public SpacePosition setUnsafeIfNotNull(@Nullable Group group, @Nullable Galaxy galaxy, @Nullable StarSystem starSystem, @Nullable Planet planet){
-        if(group != null) this.currentGroup = group;
+    public SpacePosition setUnsafeIfNotNull(@Nullable GalacticGroup galacticGroup, @Nullable Galaxy galaxy, @Nullable StarSystem starSystem, @Nullable Planet planet){
+        if(galacticGroup != null) this.currentGalacticGroup = galacticGroup;
         if(galaxy != null) this.currentGalaxy = galaxy;
         if(starSystem != null) this.currentStarSystem = starSystem;
         if(planet != null) this.currentPlanet = planet;
@@ -88,8 +86,8 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
     }
 
     @Nullable
-    public Group getGroup() {
-        return currentGroup;
+    public GalacticGroup getGroup() {
+        return currentGalacticGroup;
     }
 
     @Nullable
@@ -110,7 +108,7 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        if(this.currentGroup != null) nbt.setString("Group", this.currentGroup.getRegisterName().toString());
+        if(this.currentGalacticGroup != null) nbt.setString("GalacticGroup", this.currentGalacticGroup.getRegisterName().toString());
         if(this.currentGalaxy != null) nbt.setString("Galaxy", this.currentGalaxy.getRegisterName().toString());
         if(this.currentStarSystem != null) nbt.setString("StarSystem", this.currentStarSystem.getRegisterName().toString());
         if(this.currentPlanet != null) nbt.setString("Planet", this.currentPlanet.getRegisterName().toString());
@@ -119,8 +117,8 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        if(nbt.hasKey("Group", Constants.NBT.TAG_STRING)){
-            this.currentGroup = SpaceUtil.getByName(new ResourceLocation(nbt.getString("Group")));
+        if(nbt.hasKey("GalacticGroup", Constants.NBT.TAG_STRING)){
+            this.currentGalacticGroup = SpaceUtil.getByName(new ResourceLocation(nbt.getString("GalacticGroup")));
             if(nbt.hasKey("Galaxy", Constants.NBT.TAG_STRING)){
                 this.currentGalaxy = SpaceUtil.getByName(new ResourceLocation(nbt.getString("Galaxy")));
                 if(nbt.hasKey("StarSystem", Constants.NBT.TAG_STRING)){
@@ -140,16 +138,40 @@ public class SpacePosition implements INBTSerializable<NBTTagCompound>{
         return String.format("SpacePosition{group=%s, galaxy=%s, starSystem=%s, planet=%s}", getGroup(), getGalaxy(), getStarSystem(), getPlanet());
     }
 
-    public String getClostestLocationString(String prefix){
+    public String getClosestLocationString(String prefix){
         if(this.currentPlanet != null){
             return prefix + this.currentPlanet.getLocalizedName();
         } else if(this.currentStarSystem != null){
             return prefix + this.currentStarSystem.getLocalizedName();
         } else if(this.currentGalaxy != null){
             return prefix + this.currentGalaxy.getLocalizedName();
-        } else if(this.currentGroup != null){
-            return prefix + this.currentGroup.getLocalizedName();
+        } else if(this.currentGalacticGroup != null){
+            return prefix + this.currentGalacticGroup.getLocalizedName();
         }
         return prefix;
+    }
+
+    public SpaceObject getLowestNonNullSpaceObject(){
+        if(this.currentPlanet != null){
+            return this.currentPlanet;
+        } else if(this.currentStarSystem != null){
+            return this.currentStarSystem;
+        } else if (this.currentGalaxy != null){
+            return this.currentGalaxy;
+        }
+        return this.currentGalacticGroup;
+    }
+
+    public double getTravelDistance(SpacePosition other){
+        double myDistanceToSun = this.getLowestNonNullSpaceObject().getDistanceToSun();
+        EnumFacing myDirectionToSun = this.getLowestNonNullSpaceObject().getDirectionToSun();
+        double otherDistanceToSun = other.getLowestNonNullSpaceObject().getDistanceToSun();
+        EnumFacing otherDirectionToSun = other.getLowestNonNullSpaceObject().getDirectionToSun();
+        if(myDirectionToSun == otherDirectionToSun){
+            return Math.abs(myDistanceToSun - otherDistanceToSun);
+        } else if(myDirectionToSun.getOpposite() == otherDirectionToSun){
+            return myDistanceToSun + otherDistanceToSun;
+        }
+        return 0.5D * (myDistanceToSun + otherDistanceToSun);
     }
 }

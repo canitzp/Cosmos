@@ -1,7 +1,9 @@
 package de.canitzp.cosmos;
 
+import de.canitzp.cosmos.machine.launchpad.BlockLaunchPad;
 import de.canitzp.cosmos.machine.spaceeye.BlockSpaceEye;
 import de.canitzp.ctpcore.registry.MCRegistry;
+import de.canitzp.ctpcore.registry.Register;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -9,10 +11,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  */
 public class CosmosRegistry {
 
+    @Register
     public static BlockSpaceEye spaceEye;
-
-    public static void preInit(FMLPreInitializationEvent event){
-        MCRegistry.register(spaceEye = new BlockSpaceEye());
-    }
+    @Register
+    public static BlockLaunchPad launchPad;
 
 }

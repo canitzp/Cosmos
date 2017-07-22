@@ -1,9 +1,9 @@
-package de.canitzp.cosmos;
+package de.canitzp.cosmos.spaceobjects;
 
-import de.canitzp.cosmos.space.Galaxy;
-import de.canitzp.cosmos.space.Planet;
-import de.canitzp.cosmos.space.SpaceObject;
-import de.canitzp.cosmos.space.StarSystem;
+import de.canitzp.cosmos.spaceobjects.space.Galaxy;
+import de.canitzp.cosmos.spaceobjects.space.Planet;
+import de.canitzp.cosmos.spaceobjects.space.SpaceObject;
+import de.canitzp.cosmos.spaceobjects.space.StarSystem;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class SpaceUtil {
     public static List<Planet> getPlanets(StarSystem starSystem){
         List<Planet> planets = new ArrayList<>();
         for(Planet planet : getAllPlanets()){
-            if(planet.getStarSystem().equals(starSystem)){
+            if(planet.getParent().equals(starSystem)){
                 planets.add(planet);
             }
         }
@@ -63,7 +63,7 @@ public class SpaceUtil {
     public static List<StarSystem> getStarSystem(Galaxy galaxy){
         List<StarSystem> starSystems = new ArrayList<>();
         for(StarSystem system : getAllStarSystems()){
-            if(system.getGalaxy().equals(galaxy)){
+            if(system.getParent().equals(galaxy)){
                 starSystems.add(system);
             }
         }

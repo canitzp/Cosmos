@@ -1,7 +1,11 @@
 package de.canitzp.cosmos;
 
-import de.canitzp.cosmos.space.StarSystem;
+import de.canitzp.cosmos.spaceobjects.SpaceUtil;
+import de.canitzp.cosmos.spaceobjects.space.SpaceObject;
+import de.canitzp.cosmos.spaceobjects.space.StarSystem;
+import de.canitzp.cosmos.spaceobjects.EnumSpaceObjects;
 import de.canitzp.ctpcore.CTPCore;
+import de.canitzp.ctpcore.registry.MCRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
@@ -38,13 +42,17 @@ public class Cosmos {
         LOGGER.info("[PreInitialization] Creating unlimited space with Planets, Galaxies and more");
         EnumSpaceObjects.preInit(event);
         LOGGER.info("[PreInitialization] Registering Blocks and Items");
-        CosmosRegistry.preInit(event);
-        System.out.println(SpaceUtil.getPlanets(EnumSpaceObjects.SOLAR_SYSTEM.getInstance(StarSystem.class)));
+        MCRegistry.processRegistering(CosmosRegistry.class);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         CTPCore.init(instance, event);
+        for(SpaceObject so : SpaceObject.REGISTRY.values()){
+            if(so.getParent() != null){
+                so.getParent().addChild(so);
+            }
+        }
     }
 
 }

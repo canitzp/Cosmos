@@ -1,4 +1,4 @@
-package de.canitzp.cosmos;
+package de.canitzp.cosmos.spaceobjects.probe;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;

@@ -1,8 +1,8 @@
 package de.canitzp.cosmos.data;
 
 import de.canitzp.cosmos.Cosmos;
-import de.canitzp.cosmos.sat.Satellite;
-import de.canitzp.cosmos.SpaceProbe;
+import de.canitzp.cosmos.spaceobjects.sat.Satellite;
+import de.canitzp.cosmos.spaceobjects.probe.SpaceProbe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
@@ -92,9 +92,6 @@ public class SpaceData extends WorldSavedData{
     @SubscribeEvent
     public static void loadWorldEvent(WorldEvent.Load event){
         worldInteraction(event.getWorld());
-        //satellites.clear();
-        //satellites.add(new Satellite("Sputnik I", new SpacePosition(Planet.EARTH)));
-        System.out.println(satellites);
     }
 
     @SubscribeEvent
@@ -104,7 +101,7 @@ public class SpaceData extends WorldSavedData{
 
     private static void worldInteraction(World world){
         if(world != null && !world.isRemote){
-            MapStorage storage = world.getMapStorage();
+            MapStorage storage = world.getPerWorldStorage();
             if(storage != null){
                 WorldSavedData worldSavedData = storage.getOrLoadData(SpaceData.class, FILE_NAME);
                 if(worldSavedData instanceof SpaceData){

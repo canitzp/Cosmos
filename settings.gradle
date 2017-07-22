@@ -1,2 +1,2 @@
-//include ":CTPCore"
-//project(":CTPCore").projectDir = file("../CTPCore")
+include ":CTPCore"
+project(":CTPCore").projectDir = file("../CTPCore")
