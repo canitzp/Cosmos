@@ -1,0 +1,10 @@
+{
+  "parent": "observable_universe",
+  "distance": 0,
+  "direction": "",
+  "texture": {
+    "file_name": "default",
+    "texture_x": 0,
+    "texture_y": 0
+  }
+}

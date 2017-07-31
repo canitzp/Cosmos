@@ -2,18 +2,23 @@ package de.canitzp.cosmos;
 
 import de.canitzp.cosmos.machine.launchpad.BlockLaunchPad;
 import de.canitzp.cosmos.machine.spaceeye.BlockSpaceEye;
-import de.canitzp.ctpcore.registry.MCRegistry;
-import de.canitzp.ctpcore.registry.Register;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import de.canitzp.cosmos.spaceobjects.part.AntennaPart;
+import de.canitzp.cosmos.spaceobjects.part.EPartWeight;
 
 /**
  * @author canitzp
  */
 public class CosmosRegistry {
 
-    @Register
+    /**
+     * Blocks:
+     */
     public static BlockSpaceEye spaceEye;
-    @Register
     public static BlockLaunchPad launchPad;
+
+    /**
+     * Parts:
+     */
+    public static AntennaPart antennaShortRange = new AntennaPart("short_range", EPartWeight.LIGHT);
 
 }

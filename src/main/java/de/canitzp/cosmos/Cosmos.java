@@ -1,6 +1,7 @@
 package de.canitzp.cosmos;
 
 import de.canitzp.cosmos.spaceobjects.SpaceUtil;
+import de.canitzp.cosmos.spaceobjects.part.Part;
 import de.canitzp.cosmos.spaceobjects.space.SpaceObject;
 import de.canitzp.cosmos.spaceobjects.space.StarSystem;
 import de.canitzp.cosmos.spaceobjects.EnumSpaceObjects;
@@ -53,6 +54,7 @@ public class Cosmos {
                 so.getParent().addChild(so);
             }
         }
+        System.out.println(Part.PART_REGISTRY);
     }
 
 }

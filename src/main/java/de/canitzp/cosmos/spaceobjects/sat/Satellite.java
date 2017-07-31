@@ -1,6 +1,7 @@
 package de.canitzp.cosmos.spaceobjects.sat;
 
 import de.canitzp.cosmos.spaceobjects.SpacePosition;
+import de.canitzp.cosmos.spaceobjects.Spacecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -10,58 +11,34 @@ import java.util.List;
 /**
  * @author canitzp
  */
-public class Satellite implements INBTSerializable<NBTTagCompound> {
+public class Satellite extends Spacecraft {
 
-    private SpacePosition position;
-    private String name;
     private SatTypes type;
 
     public Satellite(String name, SpacePosition position, SatTypes type) {
-        this.name = name;
-        this.position = position;
+        super(name, position);
         this.type = type;
     }
 
     public Satellite(NBTTagCompound nbt){
-        this.name = nbt.getString("Name");
-        this.position = new SpacePosition(nbt.getCompoundTag("Position"));
-        this.type = SatTypes.values()[nbt.getInteger("SatType")];
+        super(nbt);
     }
 
-    public NBTTagCompound getRawData(){
+    @Override
+    public NBTTagCompound saveNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("Name", this.name);
-        nbt.setTag("Position", this.position.serializeNBT());
         nbt.setInteger("SatType", this.type.ordinal());
         return nbt;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
-    public NBTTagCompound serializeNBT() {
-        return new NBTTagCompound();
+    public void loadNBT(NBTTagCompound nbt) {
+        this.type = SatTypes.values()[nbt.getInteger("SatType")];
     }
 
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Satellite{name=%s, position=%s}", getName(), this.position.toString());
-    }
-
-    public SpacePosition getPosition() {
-        return position;
-    }
-
-    public List<String> getProperties(ArrayList<String> current){
-        current.add("Position: " + this.position.getClosestLocationString(""));
-        current.add("SatType:  " + this.type.name());
-        return current;
+    public List<String> getAttributes(){
+        List<String> list = super.getAttributes();
+        list.add("SatType:  " + this.type.name());
+        return list;
     }
 }

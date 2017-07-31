@@ -1,8 +1,15 @@
 package de.canitzp.cosmos.spaceobjects.part;
 
+import de.canitzp.cosmos.spaceobjects.SpacePosition;
+import de.canitzp.cosmos.spaceobjects.Spacecraft;
+import de.canitzp.cosmos.spaceobjects.space.Planet;
+import de.canitzp.cosmos.spaceobjects.space.SpaceObject;
 import de.canitzp.ctpcore.registry.IRegistryEntry;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -19,7 +26,11 @@ public abstract class Part implements IRegistryEntry {
     private EPartTypes partType;
     private EPartWeight partWeight;
 
-
+    public Part(ResourceLocation name, EPartTypes partType, EPartWeight partWeight) {
+        this.name = name;
+        this.partType = partType;
+        this.partWeight = partWeight;
+    }
 
     @Override
     public IRegistryEntry[] getRegisterElements() {
@@ -33,18 +44,23 @@ public abstract class Part implements IRegistryEntry {
 
     @Override
     public void onRegister(IRegistryEntry[] otherEntries) {
+
+    }
+
+    @Override
+    public void ownRegistry() {
         PART_REGISTRY.put(this.getRegisterName(), this);
     }
 
     @Override
-    public void ownRegistry() {}
-
-    @Override
     public void registerRenderer() {}
 
-    public abstract void addToItemStack(@Nonnull ItemStack stack);
+    @Nonnull
+    public abstract NonNullList<ItemStack> craftingIngredients(Spacecraft spacecraft);
 
-    public abstract void removeFromItemStack(@Nonnull ItemStack stack);
+    public abstract boolean canAttachedTo(Spacecraft spacecraft);
+
+    public abstract PartEntity createPartEntity(Spacecraft spacecraft);
 
     public EPartTypes getPartType() {
         return partType;
@@ -53,4 +69,6 @@ public abstract class Part implements IRegistryEntry {
     public EPartWeight getPartWeight() {
         return partWeight;
     }
+
+
 }

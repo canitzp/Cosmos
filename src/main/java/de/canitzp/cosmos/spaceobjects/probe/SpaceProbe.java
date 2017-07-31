@@ -1,38 +1,30 @@
 package de.canitzp.cosmos.spaceobjects.probe;
 
+import de.canitzp.cosmos.spaceobjects.SpacePosition;
+import de.canitzp.cosmos.spaceobjects.Spacecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * @author canitzp
  */
-public class SpaceProbe implements INBTSerializable<NBTTagCompound>{
+public class SpaceProbe extends Spacecraft {
 
-    private String name;
-
-    public SpaceProbe(){}
-
-    public SpaceProbe(NBTTagCompound nbt){
-        this.name = nbt.getString("Name");
+    public SpaceProbe(String name, SpacePosition position) {
+        super(name, position);
     }
 
-    public NBTTagCompound getRawData(){
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("Name", this.getName());
-        return nbt;
+    public SpaceProbe(NBTTagCompound nbt) {
+        super(nbt);
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
+    public NBTTagCompound saveNBT() {
         return new NBTTagCompound();
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void loadNBT(NBTTagCompound nbt) {
 
-    }
-
-    public String getName() {
-        return name;
     }
 }

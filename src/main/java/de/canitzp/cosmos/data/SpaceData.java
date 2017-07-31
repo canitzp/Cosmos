@@ -1,6 +1,7 @@
 package de.canitzp.cosmos.data;
 
 import de.canitzp.cosmos.Cosmos;
+import de.canitzp.cosmos.spaceobjects.Spacecraft;
 import de.canitzp.cosmos.spaceobjects.sat.Satellite;
 import de.canitzp.cosmos.spaceobjects.probe.SpaceProbe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,8 +13,11 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author canitzp
@@ -25,15 +29,37 @@ public class SpaceData extends WorldSavedData{
 
     public static final List<SpaceProbe> probes = new ArrayList<>();
     public static final List<Satellite> satellites = new ArrayList<>();
+    public static final List<Spacecraft> spacecrafts = new ArrayList<>();
 
     public SpaceData(String fileName) {
         super(fileName);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         probes.clear();
         satellites.clear();
+        spacecrafts.clear();
+
+        if(nbt.hasKey("Spacecrafts", Constants.NBT.TAG_COMPOUND)){
+            NBTTagCompound spacecrafts = nbt.getCompoundTag("Spacecrafts");
+            for(String key : spacecrafts.getKeySet()){
+                if(spacecrafts.hasKey(key, Constants.NBT.TAG_COMPOUND)){
+                    try {
+                        NBTTagCompound data = spacecrafts.getCompoundTag(key);
+                        Spacecraft spacecraft = (Spacecraft) Class.forName(data.getString("Class-Name")).getConstructor(NBTTagCompound.class).newInstance(data.getCompoundTag("Data"));
+                        spacecraft.init();
+                        SpaceData.spacecrafts.add(spacecraft);
+                    } catch (Exception e){
+                        Cosmos.LOGGER.error("An error occurred while reading a spacecraft!", e);
+                    }
+
+                }
+            }
+        }
+
+        /*
         if(nbt.hasKey("probe-data", Constants.NBT.TAG_COMPOUND)){
             NBTTagCompound probeData = nbt.getCompoundTag("probe-data");
             for(String key : probeData.getKeySet()){
@@ -64,10 +90,21 @@ public class SpaceData extends WorldSavedData{
                 }
             }
         }
+        */
     }
 
+    @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
+        NBTTagCompound spacecraftData = new NBTTagCompound();
+        for(Spacecraft spacecraft : spacecrafts){
+            NBTTagCompound data = new NBTTagCompound();
+            data.setString("Class-Name", spacecraft.getClass().getName());
+            data.setTag("Data", spacecraft.getRawData());
+        }
+        compound.setTag("Spacecrafts", spacecraftData);
+
+        /*
         NBTTagCompound probeData = new NBTTagCompound();
         for(SpaceProbe probe : probes){
             NBTTagCompound data = new NBTTagCompound();
@@ -86,6 +123,7 @@ public class SpaceData extends WorldSavedData{
         }
         compound.setTag("probe-data", probeData);
         compound.setTag("satellite-data", satelliteData);
+        */
         return compound;
     }
 
